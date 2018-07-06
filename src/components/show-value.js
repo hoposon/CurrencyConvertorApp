@@ -5,23 +5,34 @@ const ShowValue = (props) => {
         case 'simple' :
             // console.log(props.value);
             return (
-                <div>
+                <div className="form-group">
                     <label>{props.label}</label>
-                    <div>{props.value}</div>
+                    {/* <div>{props.value}</div> */}
+                    <input type="text" readOnly className="form-control" value={props.value} />
                 </div>
             );
             break;
         case 'simple1' :
-            let div = '';
+            // console.log(props.value);
+            return (
+                <div className="form-group  col-sm-4">
+                    <label>{props.label}</label>
+                    {/* <div>{props.value}</div> */}
+                    <input type="text" readOnly className="form-control" value={props.value} />
+                </div>
+            );
+            break;
+        case 'simple2' :
+            let input = '';
             if (props.value.maxCurrName) {
-                div = <div>{props.value.maxCurrCode} | {props.value.maxCurrName}</div>;
+                input = <input type="text" readOnly className="form-control" value={props.value.maxCurrCode + ' | ' + props.value.maxCurrName} />;
             } else {
-                div = <div>{'Not available'}</div>
+                input = <input type="text" readOnly className="form-control" value='Not available' />;
             }
             return (
-                <div>
+                <div className="form-group col-sm-4">
                     <label>{props.label}</label>
-                    {div}
+                    {input}
                 </div>
             );
             break;

@@ -13,6 +13,8 @@ class CurrenciesBox extends Component {
         }
         return(
             <select 
+                className="form-control" 
+                id="FormControlCurrSelect"
                 onChange = {(event) => this.props.onSelect(event.target.value, this.props.boxType)}
             >
                 {options}

@@ -10,14 +10,16 @@ class ConvertorInput extends Component {
 
     render() {
         return (
-            <div>
-                <input 
-                    value = {this.state.amount}
-                    onChange = {event => {
-                        this.onInputChange(event.target.value)
-                    }}
-                />
-            </div>
+            <input 
+                type="text" 
+                className="form-control" 
+                id="FormControlInput" 
+                placeholder="Type amount"
+                value = {this.state.amount}
+                onChange = {event => {
+                    this.onInputChange(event.target.value)
+                }}
+            />
         );
     }
 

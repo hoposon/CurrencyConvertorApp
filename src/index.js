@@ -8,6 +8,8 @@ import ConvertorInput from './components/convertor-input';
 import CurrenciesBox from './components/currencies-box';
 import ShowValue from './components/show-value';
 
+import './style/style.css';
+
 // main component of the application
 class App extends Component {
     
@@ -98,13 +100,41 @@ class App extends Component {
     render() {
         return (
             <div>
-                <ConvertorInput onAmountChange={this.amountSet} />
-                <CurrenciesBox currencies={this.state.currenciesList} boxType='from' onSelect={this.currencySet} />
-                <CurrenciesBox currencies={this.state.currenciesList} boxType='to' onSelect={this.currencySet} />
-                <ShowValue label='Converted Amount' type='simple' value={this.state.convertedAmount} />
-                <ShowValue label='Total amount converted' type='simple' value={this.state.stats.amount} />
-                <ShowValue label='Total number of conversions' type='simple' value={this.state.stats.requests} />
-                <ShowValue label='Most popular destination currency' type='simple1' value={{maxCurrCode: this.state.stats.maxCurrCode, maxCurrName: this.state.currenciesList[this.state.stats.maxCurrCode]}} />
+                <div className="row">
+                    <div className="col-sm-12">
+                        <h1>Currency Convertor</h1>
+                    </div>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="FormControlInput">Amount for conversion</label>
+                        <ConvertorInput onAmountChange={this.amountSet} />
+                    </div>
+                    <div class="form-group">
+                        <label for="FormControlFromCurrSelect">Amount currency</label>
+                        <CurrenciesBox currencies={this.state.currenciesList} boxType='from' onSelect={this.currencySet} />
+                    </div>
+                    <div class="form-group">
+                        <label for="FormControlFromCurrSelect">Destination currency</label>
+                        <CurrenciesBox currencies={this.state.currenciesList} boxType='to' onSelect={this.currencySet} />
+                    </div>
+                    <hr />  
+                    <div className="form-row">
+                        <ShowValue label='Converted Amount' type='simple' value={this.state.convertedAmount} />
+                    </div>
+                    <hr />  
+                    <div className="form-row stats">
+                            <ShowValue label='Total amount converted' type='simple1' value={this.state.stats.amount} />
+                        
+                            <ShowValue label='Total number of conversions' type='simple1' value={this.state.stats.requests} />
+                        {/* </div> */}
+                        {/* <div className="form-group col-sm-4"> */}
+                            <ShowValue label='Most popular destination currency' type='simple2' value={{maxCurrCode: this.state.stats.maxCurrCode, maxCurrName: this.state.currenciesList[this.state.stats.maxCurrCode]}} />
+                        {/* </div> */}
+                    </div>
+                    
+                </form>
+                
             </div>
         );
     }
@@ -121,4 +151,53 @@ class App extends Component {
 
 // Take this component's generated HTML and put it
 // on the page (in the DOM)
-ReactDOM.render(<App />, document.querySelector('.root'));
+ReactDOM.render(<App />, document.querySelector('.container'));
+
+// <div class="row">
+//                 <div class="col-md-12">
+//                 <form class="card p-2" onSubmit={(event) => {event.preventDefault()}}>
+// </form>
+// </div>
+// </div>
+
+
+
+
+
+{/* <div className="row">
+                <div className="col-sm-12">
+                    <h1>Currency Convertor</h1>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-sm-12">
+                <label>Conversion amount</label>
+                <ConvertorInput onAmountChange={this.amountSet} />
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-sm-6">
+                <label>Amount currency</label>
+                <CurrenciesBox currencies={this.state.currenciesList} boxType='from' onSelect={this.currencySet} />
+                </div>
+                <div className="col-sm-6">
+                <label>Destination currency</label>
+                <CurrenciesBox currencies={this.state.currenciesList} boxType='to' onSelect={this.currencySet} />
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-sm-12">
+                <ShowValue label='Converted Amount' type='simple' value={this.state.convertedAmount} />
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-sm-4">
+                <ShowValue label='Total amount converted' type='simple' value={this.state.stats.amount} />
+                </div>
+                <div className="col-sm-4">
+                <ShowValue label='Total number of conversions' type='simple' value={this.state.stats.requests} />
+                </div>
+                <div className="col-sm-4">
+                <ShowValue label='Most popular destination currency' type='simple1' value={{maxCurrCode: this.state.stats.maxCurrCode, maxCurrName: this.state.currenciesList[this.state.stats.maxCurrCode]}} />
+                </div>
+            </div> */}
