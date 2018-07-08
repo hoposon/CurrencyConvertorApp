@@ -32,7 +32,8 @@ class App extends Component {
                 maxCurrCode : 'Not available'
             },
             masterError : false,
-            error : false
+            error : false,
+            errorMessage: ''
         };
         this.getCurrencies();
         this.getStats();
@@ -73,13 +74,16 @@ class App extends Component {
                 error : true,
                 errorMessage : config.getStatsErrorMessage
             });
-            console.log('message:',e);
         })
     }
 
     amountSet(amount) {
         this.setState({amount});
         this.convertAmount(amount, this.state.fromCurr, this.state.toCurr);
+        this.setState({
+            error : false,
+            errorMessage : ''
+        })
     }
 
     currencySet(code, type) {
@@ -93,6 +97,10 @@ class App extends Component {
                 this.convertAmount(this.state.amount, this.state.fromCurr, code);
                 break;
         }
+        this.setState({
+            error : false,
+            errorMessage : ''
+        })
     }
 
     convertAmount(amount, fromCurr, toCurr) {
