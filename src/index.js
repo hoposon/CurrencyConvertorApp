@@ -53,7 +53,7 @@ class App extends Component {
                 masterError: true,
                 errorMessage : config.masterErrorMessage
             });
-            console.log('message:',e.message);
+            // call error reporting service
         })
     }
 
@@ -74,6 +74,7 @@ class App extends Component {
                 error : true,
                 errorMessage : config.getStatsErrorMessage
             });
+            // call error reporting service
         })
     }
 
@@ -125,7 +126,7 @@ class App extends Component {
                     error : true,
                     errorMessage : config.convertErrorMessage
                 });
-                console.log('message:',e);
+                // call error reporting service
             })
         }
     }
