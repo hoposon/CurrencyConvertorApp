@@ -7,11 +7,12 @@ import axios from 'axios';
 import ConvertorInput from './components/convertor-input';
 import CurrenciesBox from './components/currencies-box';
 import ShowValue from './components/show-value';
+import ErrorBoundary from './components/error-boundary';
 
 // get styling
 import './style/style.css';
 
-// import components config
+// import config
 import config from './config/config';
 
 // main component of the application
@@ -30,7 +31,8 @@ class App extends Component {
                 requests : 0,
                 maxCurrCode : 'Not available'
             },
-            error : null
+            masterError : false,
+            error : false
         };
         this.getCurrencies();
         this.getStats();
@@ -46,6 +48,10 @@ class App extends Component {
                 this.setState({currenciesList : response.data.data});
             }
         }).catch((e) => {
+            this.setState({
+                masterError: true,
+                errorMessage : config.masterErrorMessage
+            });
             console.log('message:',e.message);
         })
     }
@@ -57,10 +63,16 @@ class App extends Component {
                     stats : response.data.data
                 });
             } else {
-                // # co s timhle
-                console.log('statselse:', response.data.success);
+                throw new Error({
+                    message: `Getting bad response from: ${config.getStatsURL}`,
+                    error: response.data
+                });
             }
         }).catch((e) => {
+            this.setState({
+                error : true,
+                errorMessage : config.getStatsErrorMessage
+            });
             console.log('message:',e);
         })
     }
@@ -94,11 +106,18 @@ class App extends Component {
                         convertedAmount : response.data.data.convertedData.amount,
                         stats : response.data.data.stats
                     });
-                } else {
-                    this.setState({error : 'Something went wrong'});
+                }  else {
+                    throw new Error({
+                        message: `Getting bad response from: ${config.conversionURL}`,
+                        error: response.data
+                    });
                 }
             }).catch((e) => {
-                this.setState({error : 'Something went wrong'});
+                this.setState({
+                    error : true,
+                    errorMessage : config.convertErrorMessage
+                });
+                console.log('message:',e);
             })
         }
     }
@@ -111,37 +130,53 @@ class App extends Component {
                         <h1>Currency Convertor</h1>
                     </div>
                 </div>
-                <form>
-                    <div class="form-group">
-                        <label for="FormControlInput">Amount for conversion</label>
-                        <ConvertorInput onAmountChange={this.amountSet} />
+                <div>
+                    <ErrorBoundary>
+                    {this.state.masterError && <ShowValue label={this.state.errorMessage} type='error' />}
+                        {!this.state.masterError && 
+                            <div>
+                                {this.state.error && <ShowValue label={this.state.errorMessage} type='error' />}
+                                <form>
+                                    <div class="form-group">
+                                        <label for="FormControlInput">Amount for conversion</label>
+                                        <ConvertorInput onAmountChange={this.amountSet} />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="FormControlFromCurrSelect">Amount currency</label>
+                                        <CurrenciesBox currencies={this.state.currenciesList} boxType='from' onSelect={this.currencySet} />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="FormControlFromCurrSelect">Destination currency</label>
+                                        <CurrenciesBox currencies={this.state.currenciesList} boxType='to' onSelect={this.currencySet} />
+                                    </div>
+                                    <hr />  
+                                    <div className="form-row">
+                                        <ShowValue label='Converted Amount' type='simple' value={this.state.convertedAmount} />
+                                    </div>
+                                    <hr />  
+                                    <div className="form-row stats">
+                                        <ShowValue label='Total amount converted' type='simple1' value={this.state.stats.amount.toFixed(2)} />
+                                        <ShowValue label='Total number of conversions' type='simple1' value={this.state.stats.requests} />
+                                        <ShowValue label='Most popular destination currency' type='simple2' value={{maxCurrCode: this.state.stats.maxCurrCode, maxCurrName: this.state.currenciesList[this.state.stats.maxCurrCode]}} />
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </ErrorBoundary>
+                </div>
+            </div>
+        );
+        return (
+            <div>
+                <div className="row">
+                    <div className="col-sm-12">
+                        <h1>Currency Convertor</h1>
                     </div>
-                    <div class="form-group">
-                        <label for="FormControlFromCurrSelect">Amount currency</label>
-                        <CurrenciesBox currencies={this.state.currenciesList} boxType='from' onSelect={this.currencySet} />
-                    </div>
-                    <div class="form-group">
-                        <label for="FormControlFromCurrSelect">Destination currency</label>
-                        <CurrenciesBox currencies={this.state.currenciesList} boxType='to' onSelect={this.currencySet} />
-                    </div>
-                    <hr />  
-                    <div className="form-row">
-                        <ShowValue label='Converted Amount' type='simple' value={this.state.convertedAmount} />
-                    </div>
-                    <hr />  
-                    <div className="form-row stats">
-                        {/* <ShowValue label='Total amount converted' type='simple1' value={Math.round(this.state.stats.amount*100)/100} /> */}
-                        <ShowValue label='Total amount converted' type='simple1' value={this.state.stats.amount.toFixed(2)} />
-                        <ShowValue label='Total number of conversions' type='simple1' value={this.state.stats.requests} />
-                        <ShowValue label='Most popular destination currency' type='simple2' value={{maxCurrCode: this.state.stats.maxCurrCode, maxCurrName: this.state.currenciesList[this.state.stats.maxCurrCode]}} />
-                    </div>
-                    
-                </form>
+                </div>
                 
             </div>
         );
     }
-
 }
 
 

@@ -36,6 +36,13 @@ const ShowValue = (props) => {
                 </div>
             );
             break;
+        case 'error' :
+            return (
+                <div className="alert alert-danger" role="alert">
+                    {props.label}
+                </div>
+            );
+            break;
     }
     
 };
