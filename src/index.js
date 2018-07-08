@@ -130,7 +130,8 @@ class App extends Component {
                     </div>
                     <hr />  
                     <div className="form-row stats">
-                        <ShowValue label='Total amount converted' type='simple1' value={this.state.stats.amount} />
+                        {/* <ShowValue label='Total amount converted' type='simple1' value={Math.round(this.state.stats.amount*100)/100} /> */}
+                        <ShowValue label='Total amount converted' type='simple1' value={this.state.stats.amount.toFixed(2)} />
                         <ShowValue label='Total number of conversions' type='simple1' value={this.state.stats.requests} />
                         <ShowValue label='Most popular destination currency' type='simple2' value={{maxCurrCode: this.state.stats.maxCurrCode, maxCurrName: this.state.currenciesList[this.state.stats.maxCurrCode]}} />
                     </div>

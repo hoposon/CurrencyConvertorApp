@@ -4,11 +4,12 @@ const ShowValue = (props) => {
     switch(props.type) {
         case 'simple' :
             // console.log(props.value);
+
+            const value = props.value >= 0 ? props.value.toFixed(2) : props.value
             return (
                 <div className="form-group">
                     <label>{props.label}</label>
-                    {/* <div>{props.value}</div> */}
-                    <input type="text" readOnly className="form-control" value={props.value} />
+                    <input type="text" readOnly className="form-control" value={value} />
                 </div>
             );
             break;
@@ -17,7 +18,6 @@ const ShowValue = (props) => {
             return (
                 <div className="form-group  col-sm-4">
                     <label>{props.label}</label>
-                    {/* <div>{props.value}</div> */}
                     <input type="text" readOnly className="form-control" value={props.value} />
                 </div>
             );
