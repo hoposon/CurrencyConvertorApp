@@ -1,7 +1,7 @@
 # CurrencyConvertorApp
 Application for currency conversions
 
-Installation:
+<b>Installation:</b>
 
 1. Download or clone the repository
 2. Run npm install
