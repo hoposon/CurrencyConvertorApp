@@ -1,3 +1,6 @@
+// input component for amount that should be converted
+
+// ipmport 3rd party libraries
 import React, { Component } from 'react';
 
 class ConvertorInput extends Component {
@@ -23,9 +26,13 @@ class ConvertorInput extends Component {
         );
     }
 
+    // on value change
     onInputChange(term) {
+        // validate input value - only number allowed
         if (/^\d+$/.test(term) || /^$/.test(term)) {
+            // set component state
             this.setState({amount: term});
+            // try to call conversion
             this.props.onAmountChange(term);
         }
         

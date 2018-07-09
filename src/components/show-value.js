@@ -1,10 +1,13 @@
+// component that is used for displaying various values
+// it is general component that accepts props.type which it uses for rendering desired component
+
+// ipmport 3rd party libraries
 import React from 'react';
 
 const ShowValue = (props) => {
     switch(props.type) {
         case 'simple' :
-            // console.log(props.value);
-
+            // rounds value that should be displayed
             const value = props.value >= 0 ? props.value.toFixed(2) : props.value
             return (
                 <div className="form-group">
@@ -14,7 +17,7 @@ const ShowValue = (props) => {
             );
             break;
         case 'simple1' :
-            // console.log(props.value);
+            // simple display with label
             return (
                 <div className="form-group  col-sm-4">
                     <label>{props.label}</label>
@@ -23,6 +26,7 @@ const ShowValue = (props) => {
             );
             break;
         case 'simple2' :
+            // make decision which value is set and then display it correctly
             let input = '';
             if (props.value.maxCurrName) {
                 input = <input type="text" readOnly className="form-control" value={props.value.maxCurrCode + ' | ' + props.value.maxCurrName} />;
@@ -37,6 +41,7 @@ const ShowValue = (props) => {
             );
             break;
         case 'error' :
+            // error component
             return (
                 <div className="alert alert-danger" role="alert">
                     {props.label}

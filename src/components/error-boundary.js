@@ -1,5 +1,13 @@
+// error boundary to handle render exceptions
+
+// ipmport 3rd party libraries
 import React, { Component } from 'react';
-import ShowValue from './show-value';
+
+// import components
+
+// component that is used for displaying various values
+// it is general component that accepts props.type which it uses for rendering desired component
+import ShowValue from './show-value'; // here it should render error message
 
 // import config
 import config from '../config/config';
@@ -15,15 +23,18 @@ class ErrorBoundary extends Component {
         }
     }
 
+    // catch rendering error
     componentDidCatch(error, info) {
+        // set state to render correctly
         this.setState({hasError : true, info, error});
-        // call error reporting service
+        // call error reporting service - not implemented yet
     }
 
     render() {
+        // if error, render error component
         if (this.state.hasError) {
             return <ShowValue label={config.renderingErrorMessage} type='error' />
-        } else {
+        } else { // else render application
             return this.props.children
         }
     }

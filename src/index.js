@@ -1,12 +1,19 @@
+// Root file for the Currency Convertor application
+
 // ipmport 3rd party libraries
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 // import components
+// input for amount that should be converted
 import ConvertorInput from './components/convertor-input';
+// select boxes for origin and destination currencies
 import CurrenciesBox from './components/currencies-box';
+// component that is used for displaying various values
+// it is general component that accepts props.type which it uses for rendering desired component
 import ShowValue from './components/show-value';
+// error boundary to handle render exceptions
 import ErrorBoundary from './components/error-boundary';
 
 // get styling
@@ -22,111 +29,125 @@ class App extends Component {
         super(props);
 
         this.state = {
-            amount : 0,
-            fromCurr : null,
-            toCurr : null,
-            currenciesList : {},
-            stats : {
+            amount : 0,         // amount that should be converted
+            fromCurr : null,    // from currency
+            toCurr : null,      // to currency
+            currenciesList : {},// currencies list for selection listboxes
+            stats : {           // statistics data
                 amount : 0,
                 requests : 0,
                 maxCurrCode : 'Not available'
             },
-            masterError : false,
-            error : false,
-            errorMessage: ''
+            fatalError : false, // application should not be rendered at all. this error can be reset only with application reload
+            error : false,      // lover level error
+            errorMessage: ''    // error message
         };
-        this.getCurrencies();
-        this.getStats();
+        this.getCurrencies();   // load currencies list for select boxes
+        this.getStats();        // get statistic to be displayed
 
         this.amountSet = this.amountSet.bind(this);
         this.currencySet = this.currencySet.bind(this);
         this.convertAmount = this.convertAmount.bind(this);
     }
 
+    // gets list of available currencies
     getCurrencies() {
+        // calls backend server API - no cache, this is called only once
         axios.get(config.getCurrListURL).then((response) => {
+            // if status = 200 = OK, set component state
             if (response.data.status === 200) {
                 this.setState({currenciesList : response.data.data});
             }
         }).catch((e) => {
+            // in this case application should not be rendered, because it is useless
             this.setState({
-                masterError: true,
-                errorMessage : config.masterErrorMessage
+                fatalError: true,
+                errorMessage : config.fatalErrorMessage
             });
-            // call error reporting service
+            // call error reporting service - not implemented yet
         })
     }
 
+    // gets statistics for initial load of the app
     getStats() {
+        // calls backend server API - no cache, this is called only once
         axios.get(config.getStatsURL).then((response) => {
+            // if status = 200 = OK, set component state
             if (response.data.status === 200) {
                 this.setState({
                     stats : response.data.data
                 });
-            } else {
-                throw new Error({
-                    message: `Getting bad response from: ${config.getStatsURL}`,
-                    error: response.data
-                });
             }
         }).catch((e) => {
+            // in this case application can be rendered. even without statistics it can run
             this.setState({
                 error : true,
                 errorMessage : config.getStatsErrorMessage
             });
-            // call error reporting service
+            // call error reporting service - not implemented yet
         })
     }
 
+    // is called when user sets amount for conversion
     amountSet(amount) {
+        // sets component state var
         this.setState({amount});
+        // calls conversion function. If origin and destination currencies are set as well, conversion will proceed
         this.convertAmount(amount, this.state.fromCurr, this.state.toCurr);
+        // unset errors - this is after use action, here is should be safe
         this.setState({
             error : false,
             errorMessage : ''
         })
     }
 
+    // is called when user sets origin or destination currency
     currencySet(code, type) {
         switch(type) {
             case 'from' : 
+                // sets component state var
                 this.setState({fromCurr : code});
+                // calls conversion function. If amount and destination currencies are set as well, conversion will proceed
                 this.convertAmount(this.state.amount, code, this.state.toCurr);
                 break;
             case 'to' :
+                // sets component state var
                 this.setState({toCurr: code});
+                // calls conversion function. If amount and origin currencies are set as well, conversion will proceed
                 this.convertAmount(this.state.amount, this.state.fromCurr, code);
                 break;
         }
+        // unset errors - this is after use action, here is should be safe
         this.setState({
             error : false,
             errorMessage : ''
         })
     }
 
+    // conversion function
     convertAmount(amount, fromCurr, toCurr) {
+
+        // If amount, origin and destination currencies are set then this will proceed
         if (amount && fromCurr && toCurr) {
 
+            // build URL with proper parameters
             const URL = `${config.conversionURL}?amount=${amount}&from=${fromCurr}&to=${toCurr}`;
 
+            // call conversion function on backend
             axios.get(URL).then((response) => {
                 if (response.data.status === 200) {
                     this.setState({
                         convertedAmount : response.data.data.convertedData.amount,
                         stats : response.data.data.stats
                     });
-                }  else {
-                    throw new Error({
-                        message: `Getting bad response from: ${config.conversionURL}`,
-                        error: response.data
-                    });
                 }
             }).catch((e) => {
+                // in this case application should not be rendered, because it is useless
                 this.setState({
-                    error : true,
+                    fatalError : true,
                     errorMessage : config.convertErrorMessage
                 });
-                // call error reporting service
+                // call error reporting service - not implemented yet
             })
         }
     }
@@ -140,10 +161,12 @@ class App extends Component {
                     </div>
                 </div>
                 <div>
-                    <ErrorBoundary>
-                    {this.state.masterError && <ShowValue label={this.state.errorMessage} type='error' />}
-                        {!this.state.masterError && 
+                    <ErrorBoundary> 
+                    {/* // if fatalError is set, only error message is displayed */}
+                    {this.state.fatalError && <ShowValue label={this.state.errorMessage} type='error' />}
+                        {!this.state.fatalError && 
                             <div>
+                                {/* // if error is set application will load with error message displayed */}
                                 {this.state.error && <ShowValue label={this.state.errorMessage} type='error' />}
                                 <form>
                                     <div class="form-group">
@@ -173,16 +196,6 @@ class App extends Component {
                         }
                     </ErrorBoundary>
                 </div>
-            </div>
-        );
-        return (
-            <div>
-                <div className="row">
-                    <div className="col-sm-12">
-                        <h1>Currency Convertor</h1>
-                    </div>
-                </div>
-                
             </div>
         );
     }

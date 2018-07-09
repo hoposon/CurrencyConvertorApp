@@ -1,3 +1,6 @@
+// select boxes component for origin and destination currencies list boxes
+
+// ipmport 3rd party libraries
 import React, { Component } from 'react';
 
 class CurrenciesBox extends Component {
@@ -6,8 +9,9 @@ class CurrenciesBox extends Component {
     }
 
     render() {
-        // # tady jeste proverit to value v tom prvnim optionu
+        // set the first option to placeholder value
         let options = [<option value=''>Select currency code</option>];
+        // loop through currencies list retrieved from backend service and set select options
         for(let temp in this.props.currencies) {
             options.push(<option value={temp}>{temp} | {this.props.currencies[temp]}</option>);
         }
